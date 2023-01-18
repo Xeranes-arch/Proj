@@ -2,9 +2,8 @@ import pymunk
 import pymunk.pygame_util
 import pygame
 import random
-#lol2
-#branch flo
-#helooooo
+
+
 def main():
     print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go. Press Enter to start:")
     # input()
@@ -37,7 +36,13 @@ class World:
 
     def run(self):
         draw_options = pymunk.pygame_util.DrawOptions(self.screen)
+
+        self.screen.fill((210, 210, 210))
+        self.space.debug_draw(draw_options)
+        pygame.display.update()
+
         run = True
+        update = False
         while run:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -47,23 +52,34 @@ class World:
                     pos = pygame.mouse.get_pos()
                     if n == 0:
                         self.place_ball(pos)
+                        n = n + 1
                     elif n == 1:
                         self.set_dirandvel(pos)
+                        update = True
                     else:
                         self.reset()
+                        update = False
+                        n = 0
+            if update:
+                self.space.step(0.001)
 
-            self.screen.fill((210, 210, 210))
-            self.space.debug_draw(draw_options)
-            pygame.display.update()
-            self.space.step(0.001)
+            
+    def simulate(self):
+        self.space.step(0.001)
 
     def place_ball(self, pos):
+        body = pymunk.Body(mass=1, moment=10)
+        body.position = (pos)
+        circle = pymunk.Circle(body, radius=30)
+        circle.elasticity = 0.95
+        self.space.add(body, circle)
         pass
 
     def set_dirandvel(self, pos):
         pass
 
     def reset(self):
+        
         pass
 
 
