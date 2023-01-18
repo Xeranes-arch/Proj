@@ -2,7 +2,7 @@ import pymunk
 import pymunk.pygame_util
 import pygame
 import random
-#lol
+#lol2
 
 def main():
     print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go. Press Enter to start:")
