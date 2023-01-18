@@ -4,6 +4,7 @@ import pygame
 import random
 #lol2
 #branch flo
+#helooooo
 def main():
     print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go. Press Enter to start:")
     # input()
