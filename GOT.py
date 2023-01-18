@@ -33,6 +33,8 @@ class World:
         t2.elasticity = 0.99999
         self.space.add(t1, t2)
         self.screen = pygame.display.set_mode(size)
+        self.body = None
+        self.circle = None
 
     def run(self):
         draw_options = pymunk.pygame_util.DrawOptions(self.screen)
@@ -68,11 +70,11 @@ class World:
         self.space.step(0.001)
 
     def place_ball(self, pos):
-        body = pymunk.Body(mass=1, moment=10)
-        body.position = (pos)
-        circle = pymunk.Circle(body, radius=30)
-        circle.elasticity = 0.95
-        self.space.add(body, circle)
+        self.body = pymunk.Body(mass=1, moment=10)
+        self.body.position = (pos)
+        self.circle = pymunk.Circle(self.body, radius=30)
+        self.circle.elasticity = 0.95
+        self.space.add(self.body, self.circle)
         pass
 
     def set_dirandvel(self, pos):
