@@ -51,20 +51,20 @@ class World:
         run = True
         while run:
             self.screen.fill((210, 210, 210))
+            if n==1:
+                
+                line = [pos, pygame.mouse.get_pos()]
+                
+                pygame.draw.line(self.screen, (255, 0, 0), line[0], line[1], 3)
             self.space.debug_draw(draw_options)
             pygame.display.update()
-
-            pygame.draw.line(self.screen, (255, 0, 0), (0,0), (1000,1000), 3)
-        
 
 
 
             for event in pygame.event.get():
-                if n==1:
                 
-                    line = [pos, pygame.mouse.get_pos()]
-                    
-                    pygame.draw.line(self.screen, (255, 0, 0), line[0], line[1], 3)
+
+                
                 # quit
                 if event.type == pygame.QUIT:
                     run = False
