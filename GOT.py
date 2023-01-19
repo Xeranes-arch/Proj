@@ -53,7 +53,18 @@ class World:
             self.screen.fill((210, 210, 210))
             self.space.debug_draw(draw_options)
             pygame.display.update()
+
+            pygame.draw.line(self.screen, (255, 0, 0), (0,0), (1000,1000), 3)
+        
+
+
+
             for event in pygame.event.get():
+                if n==1:
+                
+                    line = [pos, pygame.mouse.get_pos()]
+                    
+                    pygame.draw.line(self.screen, (255, 0, 0), line[0], line[1], 3)
                 # quit
                 if event.type == pygame.QUIT:
                     run = False
@@ -66,13 +77,16 @@ class World:
                         n += 1
                     elif n == 1:
                         self.set_dirandvel(pos)
+
                         update = True
                         n += 1
-                    elif n == 3:
+                    elif n == 2:
                         self.reset()
                         update = False
                         n = 0
-            # only run once user launches
+
+                
+            #only run once user launches
             if update:
                 self.space.step(0.005)
                 if 1020 < (self.body.position)[0] < 1070 and self.body.position[1] > 696 and winable:
@@ -102,10 +116,13 @@ class World:
         """removes previous ball"""
         self.space.remove(self.body)
         self.space.remove(self.ball)
-
-    def win(self):
+         
         """should check if the player has scored, say so, end the game (and prompt play again)"""
+
+    
+
 
 
 if __name__ == "__main__":
     main()
+    
