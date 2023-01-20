@@ -1,7 +1,8 @@
 import pymunk
 import pymunk.pygame_util
 import pygame
-import random
+
+from pymunk.vec2d import Vec2d
 
 
 def main():
@@ -30,10 +31,12 @@ class World:
             segment.friction = 0.999
             self.space.add(segment)
         # make target
-        t1 = pymunk.Segment(self.space.static_body, (1020, 720), (1020, 320), 2)
+        t1 = pymunk.Segment(self.space.static_body,
+                            (1020, 720), (1020, 320), 2)
         t1.elasticity = 0.99999
         t1.friction = 0.999
-        t2 = pymunk.Segment(self.space.static_body, (1070, 720), (1070, 320), 2)
+        t2 = pymunk.Segment(self.space.static_body,
+                            (1070, 720), (1070, 320), 2)
         t2.elasticity = 0.99999
         t2.friction = 0.999
         self.space.add(t1, t2)
@@ -44,47 +47,53 @@ class World:
     def run(self):
         """Well. It runs the game."""
         draw_options = pymunk.pygame_util.DrawOptions(self.screen)
-        # loop parameters
+        # loop flags / one could do without them and just use n, but for the sake of readabillity, flags
         n = 0
         update = False
         winable = False
         run = True
+        # Interface starts running
         while run:
             self.screen.fill((210, 210, 210))
-            self.space.debug_draw(draw_options)
-            pygame.display.update()
+            # self.space.debug_draw(draw_options)
+            # pygame.display.update()
+            # check inputs
             for event in pygame.event.get():
                 # quit
                 if event.type == pygame.QUIT:
                     run = False
                 # mouseclick; first, second, third, fourth
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pos = pygame.mouse.get_pos()
+                    ball_pos = pygame.mouse.get_pos()
                     if n == 0:
-                        self.place_ball(pos)
+                        self.place_ball(ball_pos)
                         winable = True
                         n += 1
                     elif n == 1:
-                        self.set_dirandvel(pos)
+                        self.set_dirandvel(ball_pos)
                         n += 1
-                    elif n == 2:
                         update = True
-                        n += 1
-                    elif n == 3:
+                    elif n == 2:
                         self.reset()
                         update = False
                         n = 0
-            # only run once user launches
+            # Vector dirandvel
+            if n == 1:
+                line = [ball_pos, pygame.mouse.get_pos()]
+                pygame.draw.line(self.screen, (255, 0, 0), line[0], line[1], 3)
+            self.space.debug_draw(draw_options)
+            pygame.display.update()
+            # only run once user launches/clicks second time
             if update:
                 self.space.step(0.001)
                 if 1020 < (self.body.position)[0] < 1070 and self.body.position[1] > 696 and winable:
                     print("You win! \nGo again if you like.")
                     winable = False
 
-    def place_ball(self, pos):
+    def place_ball(self, ball_pos):
         """places ball at given click position"""
         self.body = pymunk.Body(mass=1, moment=10)
-        self.body.position = (pos)
+        self.body.position = (ball_pos)
         self.ball = pymunk.Circle(self.body, radius=20)
         self.ball.elasticity = 0.2
         self.ball.friction = 0.5
@@ -92,14 +101,16 @@ class World:
 
     def set_dirandvel(self, pos):
         """should draw arrow to click and wait """
+        p0 = self.body.position
+        x, y = pos
+        p1 = Vec2d(x=float(x), y=float(y))
+        impulse = 10 * (p1 - p0)
+        self.body.apply_impulse_at_local_point(impulse)
 
     def reset(self):
         """removes previous ball"""
         self.space.remove(self.body)
         self.space.remove(self.ball)
-
-    def win(self):
-        """should check if the player has scored, say so, end the game (and prompt play again)"""
 
 
 if __name__ == "__main__":
