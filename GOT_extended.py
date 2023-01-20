@@ -1,3 +1,10 @@
+"""
+A simple physics simulation representing a Trebuchet.
+This Version is a two player game, including scores.
+The Users are able to place a ball, set its initial velocity and launch it, attempting to hit a target.
+There is a randomized target and wind.
+"""
+
 import pymunk
 import pymunk.pygame_util
 import pygame
@@ -9,9 +16,8 @@ from pymunk.vec2d import Vec2d
 
 def main():
     print("This is GOT. Two Players, random target, better rules. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \
-            \nThere are Trickshots (bounces [+1 point for each] and scoring from below the target [3 points]) and a randomized wind, displayed with the gravity in the top left. \nGot it? Let's go.")
-    # input()
-    # init pygame with world ready to play
+            \nThere are Trickshots (bounces [+1 point for each] and scoring from below the target [3 points]) and a randomized wind, displayed with the gravity in the top left. \
+            \nGot it? Let's go.")
     world = World()
     world.run()
 

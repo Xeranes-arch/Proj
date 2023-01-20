@@ -1,95 +1,109 @@
+"""
+A simple physics simulation representing a Trebuchet.
+The User is able to place a ball, set its initial velocity and launch it, attempting to hit a target.
+"""
+
 import pymunk
 import pymunk.pygame_util
 import pygame
+import sys
 
 from pymunk.vec2d import Vec2d
 
 
 def main():
+    
     print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go.")
-    # define screen
+
+    # Define screen
     size = (1280, 720)
     pts = [(0, 0), (size[0], 0), (size[0], size[1]), (0, size[1])]
     screen = pygame.display.set_mode(size)
+
     space = create_World(pts)
     run(screen, space)
 
 
 def create_World(pts):
     """creates the environment of the game"""
-    # make space
+    # Make space
     space = pymunk.Space()
     space.gravity = (0, 981)
-    # make world boundaries
+
+    # Make world boundaries
     for i in range(4):
         segment = pymunk.Segment(
             space.static_body, pts[i], pts[(i+1) % 4], 4)
         segment.elasticity = 0.75
         segment.friction = 0.75
         space.add(segment)
-    # make target
-    t1 = pymunk.Segment(space.static_body,
-                        (940, 720), (940, 320), 2)
-    t1.elasticity = 0.75
-    t1.friction = 0.75
-    t2 = pymunk.Segment(space.static_body,
-                        (1000, 720), (1000, 320), 2)
-    t2.elasticity = 0.75
-    t2.friction = 0.75
-    space.add(t1, t2)
+
+    # Make target
+    t = pymunk.Segment(space.static_body, (940 + 60 * i, 720), (940 + 60 * i, 320), 2)
+    t.elasticity = 0.75
+    t.friction = 0.75
+    
+    space.add(t)
     return space
 
 
 def run(screen, space):
-    """Well. It runs the game."""
+    """Run it."""
     draw_options = pymunk.pygame_util.DrawOptions(screen)
-    # loop flags / one could do without them and just use n, but for the sake of readabillity, flags
+
+    # Loop flags / one could do without them and just use n, but for the sake of readabillity, flags
     n = 0
-    update = False
-    winable = False
-    run = True
-    # Interface starts running
+    flag = {"run": True, "winable": False, "simulate": False}
+
     while run:
-        # check inputs
+
+        # Check for inputs
         for event in pygame.event.get():
-            # quit
             if event.type == pygame.QUIT:
-                run = False
-            # mouseclick; first, second, third, fourth
+                sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
+                # First click
                 if n == 0:
                     place_ball(space, pos)
-                    winable = True
+                    flag["winable"] = True
                     n += 1
+                # Second click
                 elif n == 1:
                     set_dirandvel(space, pos)
+                    flag["simulate"] = True
                     n += 1
-                    update = True
+                # Third click
                 elif n == 2:
                     reset(space)
-                    update = False
+                    flag["simulate"] = False
                     n = 0
-        # draw everything
+
         screen.fill((210, 210, 210))
         if n == 1:
             line = [pos, pygame.mouse.get_pos()]
             pygame.draw.line(screen, (255, 0, 0), line[0], line[1], 3)
         space.debug_draw(draw_options)
         pygame.display.update()
-        # only draw space once user launches/clicks second time
-        if update:
-            # rolling friction / for whatever reason, if allowed to apply in the air it will dampen way too much.
+
+        # Only simulate ball once user clicks second time
+        if flag["simulate"]:
+
+            # Rolling friction / for whatever reason, if allowed to apply in the air it will dampen way too much.
             if space.body.position[1] > 696:
                 space.body.angular_velocity *= 0.975
+
             space.step(0.001)
-            if 940 < (space.body.position)[0] < 1000 and space.body.position[1] > 696 and winable:
+
+            # Check win
+            if 940 < (space.body.position)[0] < 1000 and space.body.position[1] > 696 and flag["winable"]:
                 print("You win! \nGo again if you like.")
-                winable = False
+                flag["winable"] = False
 
 
 def place_ball(space, pos):
-    """places ball at given click position"""
+    """Places ball at given click position."""
     space.body = pymunk.Body(mass=1, moment=10)
     space.body.position = pos
     space.ball = pymunk.Circle(space.body, radius=20)
@@ -99,7 +113,7 @@ def place_ball(space, pos):
 
 
 def set_dirandvel(space, pos):
-    """sets initial impulse"""
+    """Sets initial impulse."""
     p0 = space.body.position
     x, y = pos
     p1 = Vec2d(x=float(x), y=float(y))
@@ -108,7 +122,7 @@ def set_dirandvel(space, pos):
 
 
 def reset(space):
-    """removes previous ball"""
+    """Removes previous ball."""
     space.remove(space.body)
     space.remove(space.ball)
 
