@@ -4,8 +4,9 @@ import pygame
 import random
 from pymunk.vec2d import Vec2d
 
+
 def main():
-    print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go. Press Enter to start:")
+    print("This is GOT. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \nGot it? Let's go.")
     # input()
     # init pygame with world ready to play
     world = World()
@@ -30,10 +31,12 @@ class World:
             segment.friction = 0.999
             self.space.add(segment)
         # make target
-        t1 = pymunk.Segment(self.space.static_body, (1020, 720), (1020, 320), 2)
+        t1 = pymunk.Segment(self.space.static_body,
+                            (1020, 720), (1020, 320), 2)
         t1.elasticity = 0.99999
         t1.friction = 0.999
-        t2 = pymunk.Segment(self.space.static_body, (1070, 720), (1070, 320), 2)
+        t2 = pymunk.Segment(self.space.static_body,
+                            (1070, 720), (1070, 320), 2)
         t2.elasticity = 0.99999
         t2.friction = 0.999
         self.space.add(t1, t2)
@@ -51,20 +54,16 @@ class World:
         run = True
         while run:
             self.screen.fill((210, 210, 210))
-            if n==1:
-                
+            if n == 1:
+
                 line = [pos, pygame.mouse.get_pos()]
-                
+
                 pygame.draw.line(self.screen, (255, 0, 0), line[0], line[1], 3)
             self.space.debug_draw(draw_options)
             pygame.display.update()
 
-
-
             for event in pygame.event.get():
-                
 
-                
                 # quit
                 if event.type == pygame.QUIT:
                     run = False
@@ -85,8 +84,7 @@ class World:
                         update = False
                         n = 0
 
-                
-            #only run once user launches
+            # only run once user launches
             if update:
                 self.space.step(0.005)
                 if 1020 < (self.body.position)[0] < 1070 and self.body.position[1] > 696 and winable:
@@ -110,19 +108,13 @@ class World:
         impulse = 10 * (p1 - p0)
         self.body.apply_impulse_at_local_point(impulse)
 
-
-
     def reset(self):
         """removes previous ball"""
         self.space.remove(self.body)
         self.space.remove(self.ball)
-         
+
         """should check if the player has scored, say so, end the game (and prompt play again)"""
-
-    
-
 
 
 if __name__ == "__main__":
     main()
-    
