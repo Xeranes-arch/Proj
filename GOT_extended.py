@@ -1,7 +1,9 @@
 import pymunk
 import pymunk.pygame_util
 import pygame
+import random
 
+import pymunk.shapes
 from pymunk.vec2d import Vec2d
 
 
@@ -19,10 +21,11 @@ class World:
         # define screen
         size = (1280, 720)
         pts = [(0, 0), (size[0], 0), (size[0], size[1]), (0, size[1])]
+        wind = random.randint(-500, 500)
         self.screen = pygame.display.set_mode(size)
         # create space
         self.space = pymunk.Space()
-        self.space.gravity = (0, 981)
+        self.space.gravity = (wind, 981)
         # make world boundaries
         for i in range(4):
             segment = pymunk.Segment(
@@ -30,16 +33,12 @@ class World:
             segment.elasticity = 0.75
             segment.friction = 0.75
             self.space.add(segment)
-        # make target
-        t1 = pymunk.Segment(self.space.static_body,
-                            (940, 720), (940, 320), 2)
-        t1.elasticity = 0.75
-        t1.friction = 0.75
-        t2 = pymunk.Segment(self.space.static_body,
-                            (1000, 720), (1000, 320), 2)
-        t2.elasticity = 0.75
-        t2.friction = 0.75
-        self.space.add(t1, t2)
+        # make random box target
+        self.t = None
+        self.t1 = None
+        self.t2 = None
+        self.t3 = None
+        self.make_target()
         # ball
         self.body = None
         self.ball = None
@@ -52,6 +51,7 @@ class World:
         update = False
         winable = False
         run = True
+        won = False
         # Interface starts running
         while run:
             self.screen.fill((210, 210, 210))
@@ -75,6 +75,11 @@ class World:
                         self.reset()
                         update = False
                         n = 0
+                        # new target
+                        if won:
+                            self.space.remove(
+                                self.t, self.t1, self.t2, self.t3)
+                            self.make_target
             # Vector dirandvel
             if n == 1:
                 line = [ball_pos, pygame.mouse.get_pos()]
@@ -87,9 +92,10 @@ class World:
                 if self.body.position[1] > 696:
                     self.ball.body.angular_velocity *= 0.975
                 self.space.step(0.001)
-                if 940 < (self.body.position)[0] < 1000 and self.body.position[1] > 696 and winable:
+                if (self.pos_g[0] - 50) < (self.body.position)[0] < (self.pos_g[0] + 50) and (self.pos_g[1] - 40) < self.body.position[1] < (self.pos_g[1] + 40) and winable:
                     print("You win! \nGo again if you like.")
                     winable = False
+                    won = True
 
     def place_ball(self, ball_pos):
         """places ball at given click position"""
@@ -112,6 +118,28 @@ class World:
         """removes previous ball"""
         self.space.remove(self.body)
         self.space.remove(self.ball)
+
+    def make_target(self):
+        gsz = 60/2
+        t_x = random.randint(100, 1180)
+        t_y = random.randint(100, 620)
+        self.pos_g = (t_x, t_y)
+        self.t = pymunk.Body(mass=1, moment=10)
+        print(self.pos_g)
+        self.t.position = (self.pos_g)
+        self.t1 = pymunk.Segment(self.space.static_body,
+                                 (t_x - gsz, t_y - gsz), (t_x - gsz, t_y + gsz), 2)
+        self.t1.elasticity = 0.99999
+        self.t1.friction = 0.999
+        self.t2 = pymunk.Segment(self.space.static_body,
+                                 (t_x - gsz, t_y + gsz), (t_x + gsz, t_y + gsz), 2)
+        self.t2.elasticity = 0.99999
+        self.t2.friction = 0.999
+        self.t3 = pymunk.Segment(self.space.static_body,
+                                 (t_x + gsz, t_y - gsz), (t_x + gsz, t_y + gsz), 2)
+        self.t3.elasticity = 0.99999
+        self.t3.friction = 0.999
+        self.space.add(self.t, self.t1, self.t2, self.t3)
 
 
 if __name__ == "__main__":
