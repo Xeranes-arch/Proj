@@ -9,7 +9,7 @@ from pymunk.vec2d import Vec2d
 
 def main():
     print("This is GOT. Two Players, random target, better rules. \nYou place the ball, set its launch direction and initial speed as well as reset by left clicking. \
-            \nThere are Trickshots (bounces [+1 point for each] and scoring from below the target [3 points]), a randomized wind, displayed with the gravity in the top left \nGot it? Let's go.")
+            \nThere are Trickshots (bounces [+1 point for each] and scoring from below the target [3 points]) and a randomized wind, displayed with the gravity in the top left. \nGot it? Let's go.")
     # input()
     # init pygame with world ready to play
     world = World()
@@ -60,6 +60,7 @@ class World:
         winable = False
         run = True
         won = False
+        yeetable = True
         # Interface starts running
         while run:
 
@@ -74,7 +75,8 @@ class World:
                     ball_pos = pygame.mouse.get_pos()
                     if n == 0:
                         if (self.pos_g[0] - 40) < (ball_pos)[0] < (self.pos_g[0] + 35) and (self.pos_g[1] - 40) < ball_pos[1] < (self.pos_g[1] + 40):
-                            print("Yea. Right. Nice try. You get skipped now.")
+                            print(
+                                "Yea. Right. Nice try. You get skipped. It's the other Players turn now.")
                             if self.current_Player == 1:
                                 self.current_Player = 2
                             else:
@@ -88,6 +90,10 @@ class World:
                             n += 1
                     elif n == 1:
                         self.set_dirandvel(ball_pos)
+                        print(self.body.velocity[0])
+                        if abs(self.body.velocity[0]) > 5000 or abs(self.body.velocity[1]) > 2500 and yeetable:
+                            print("Achievement unlocked: YEET!")
+                            yeetable = False
                         n += 1
                         update = True
                     elif n == 2:
@@ -132,6 +138,11 @@ class World:
                     else:
                         print(str(worth) + " Points for Player" + str(self.current_Player) +
                               "!\nScore is: " + str(self.score))
+                    if self.score[0] > 20 or self.score[1] > 20:
+                        print(
+                            "\n\n Hey. You've been playing quite a bit. I'm glad you like the game.\n\n")
+                    if self.score[0] > 100 or self.score[1] > 100:
+                        print("Go touch some grass.")
 
                     winable = False
                     won = True
