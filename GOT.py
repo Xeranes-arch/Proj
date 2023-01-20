@@ -55,8 +55,6 @@ class World:
         # Interface starts running
         while run:
             self.screen.fill((210, 210, 210))
-            # self.space.debug_draw(draw_options)
-            # pygame.display.update()
             # check inputs
             for event in pygame.event.get():
                 # quit
