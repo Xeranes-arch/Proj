@@ -99,7 +99,7 @@ def place_ball(space, pos):
 
 
 def set_dirandvel(space, pos):
-    """should draw arrow to click and wait """
+    """sets initial impulse"""
     p0 = space.body.position
     x, y = pos
     p1 = Vec2d(x=float(x), y=float(y))

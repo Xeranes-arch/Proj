@@ -60,6 +60,7 @@ class World:
         winable = False
         run = True
         won = False
+        yeetable = True
         # Interface starts running
         while run:
 
@@ -89,6 +90,10 @@ class World:
                             n += 1
                     elif n == 1:
                         self.set_dirandvel(ball_pos)
+                        print(self.body.velocity[0])
+                        if abs(self.body.velocity[0]) > 5000 or abs(self.body.velocity[1]) > 2500 and yeetable:
+                            print("Achievement unlocked: YEET!")
+                            yeetable = False
                         n += 1
                         update = True
                     elif n == 2:
