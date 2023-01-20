@@ -50,7 +50,6 @@ def run(screen, space):
     run = True
     # Interface starts running
     while run:
-        screen.fill((210, 210, 210))
         # check inputs
         for event in pygame.event.get():
             # quit
@@ -71,13 +70,14 @@ def run(screen, space):
                     reset(space)
                     update = False
                     n = 0
-        # Vector dirandvel
+        # draw everything
+        screen.fill((210, 210, 210))
         if n == 1:
             line = [pos, pygame.mouse.get_pos()]
             pygame.draw.line(screen, (255, 0, 0), line[0], line[1], 3)
         space.debug_draw(draw_options)
         pygame.display.update()
-        # only run once user launches/clicks second time
+        # only draw space once user launches/clicks second time
         if update:
             # rolling friction / for whatever reason, if allowed to apply in the air it will dampen way too much.
             if space.body.position[1] > 696:

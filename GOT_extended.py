@@ -74,7 +74,8 @@ class World:
                     ball_pos = pygame.mouse.get_pos()
                     if n == 0:
                         if (self.pos_g[0] - 40) < (ball_pos)[0] < (self.pos_g[0] + 35) and (self.pos_g[1] - 40) < ball_pos[1] < (self.pos_g[1] + 40):
-                            print("Yea. Right. Nice try. You get skipped now.")
+                            print(
+                                "Yea. Right. Nice try. You get skipped. It's the other Players turn now.")
                             if self.current_Player == 1:
                                 self.current_Player = 2
                             else:
@@ -132,6 +133,11 @@ class World:
                     else:
                         print(str(worth) + " Points for Player" + str(self.current_Player) +
                               "!\nScore is: " + str(self.score))
+                    if self.score[0] > 20 or self.score[1] > 20:
+                        print(
+                            "\n\n Hey. You've been playing quite a bit. I'm glad you like the game.\n\n")
+                    if self.score[0] > 100 or self.score[1] > 100:
+                        print("Go touch some grass.")
 
                     winable = False
                     won = True
