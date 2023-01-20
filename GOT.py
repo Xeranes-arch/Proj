@@ -27,18 +27,18 @@ class World:
         for i in range(4):
             segment = pymunk.Segment(
                 self.space.static_body, pts[i], pts[(i+1) % 4], 4)
-            segment.elasticity = 0.999
-            segment.friction = 0.999
+            segment.elasticity = 0.75
+            segment.friction = 0.75
             self.space.add(segment)
         # make target
         t1 = pymunk.Segment(self.space.static_body,
-                            (1020, 720), (1020, 320), 2)
-        t1.elasticity = 0.99999
-        t1.friction = 0.999
+                            (940, 720), (940, 320), 2)
+        t1.elasticity = 0.75
+        t1.friction = 0.75
         t2 = pymunk.Segment(self.space.static_body,
-                            (1070, 720), (1070, 320), 2)
-        t2.elasticity = 0.99999
-        t2.friction = 0.999
+                            (1000, 720), (1000, 320), 2)
+        t2.elasticity = 0.75
+        t2.friction = 0.75
         self.space.add(t1, t2)
         # ball
         self.body = None
@@ -85,8 +85,11 @@ class World:
             pygame.display.update()
             # only run once user launches/clicks second time
             if update:
+                # rolling friction / for whatever reason, if allowed to apply in the air it will dampen way too much.
+                if self.body.position[1] > 696:
+                    self.ball.body.angular_velocity *= 0.975
                 self.space.step(0.001)
-                if 1020 < (self.body.position)[0] < 1070 and self.body.position[1] > 696 and winable:
+                if 940 < (self.body.position)[0] < 1000 and self.body.position[1] > 696 and winable:
                     print("You win! \nGo again if you like.")
                     winable = False
 
@@ -95,8 +98,8 @@ class World:
         self.body = pymunk.Body(mass=1, moment=10)
         self.body.position = (ball_pos)
         self.ball = pymunk.Circle(self.body, radius=20)
-        self.ball.elasticity = 0.2
-        self.ball.friction = 0.5
+        self.ball.elasticity = 0.5
+        self.ball.friction = 0.75
         self.space.add(self.body, self.ball)
 
     def set_dirandvel(self, pos):
@@ -104,7 +107,7 @@ class World:
         p0 = self.body.position
         x, y = pos
         p1 = Vec2d(x=float(x), y=float(y))
-        impulse = 10 * (p1 - p0)
+        impulse = 5 * (p1 - p0)
         self.body.apply_impulse_at_local_point(impulse)
 
     def reset(self):
