@@ -14,7 +14,7 @@ def main():
 
 
 class World:
-
+    """This is a class that should by all rights not be a class. We are aware that the structure of this code is not necessarily logical. It sort of grew."""
     def __init__(self):
         # define screen
         size = (1280, 720)
