@@ -39,11 +39,11 @@ def create_World(pts):
         space.add(segment)
 
     # Make target
-    t = pymunk.Segment(space.static_body, (940 + 60 * i, 720), (940 + 60 * i, 320), 2)
-    t.elasticity = 0.75
-    t.friction = 0.75
-    
-    space.add(t)
+    for i in range(2):
+        t = pymunk.Segment(space.static_body, (940 + 60 * i, 720), (940 + 60 * i, 320), 2)
+        t.elasticity = 0.75
+        t.friction = 0.75
+        space.add(t)
     return space
 
 
